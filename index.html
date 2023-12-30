@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="box">
+        <h1>Weather App</h1>
+        <div class="search">
+            <input type="text" placeholder="Enter City Name" spellcheck="false">
+            <div class="btn"><button><img  src="search.png"></button>
+            </div>
+            </div>
+        <div class="error"><p> </p></div>
+
+    <div class="weather">
+            <img src="Images/cloudy.png" class="m_icon">
+            <h4 class = "condition"> </h4>
+            <h1 class="temp" >22°c</h1>
+            <h3 class="city">Karachi</h3>
+            <h5 class="country"></h5>
+        
+        
+        <div class="details">
+            <div class="col">
+            <img src="Images/wind.png" style="max-width: 40px;">
+
+            <p class = 'wind_speed'>25 Km/h</p>
+            <p>Wind Speed</p>
+            </div>
+            
+            <div class="col">   
+            <img src="Images/humidity.png" style="max-width: 40px;">
+            
+            
+
+            <p class = 'humidity'>50%</p>
+            <p>Humidity</p>
+        
+        </div>
+
+    </div>
+    </div>
+<script>
+    let key = "79b8fbed9b6f420685a150000230810";
+    let url = "https://api.weatherapi.com/v1/current.json?key=";
+
+    let error = "* City name is invalid" 
+    
+    let Weather_icon = document.querySelector(".m_icon")
+    let condition = ""
+    let searched_city = document.querySelector(".search input")
+    let searched = document.querySelector(".btn")
+
+    async function check_weather(city) {
+        const response = await fetch(url + key + '&q='+ city);
+
+        if (response.status == 400 || response.status == 400){
+            document.querySelector(".weather").style.display = "none";
+            document.querySelector(".error").innerHTML = error;
+            document.querySelector(".error").style.display = "block";
+        }
+        else{
+            document.querySelector(".error").style.display = "none";
+            document.querySelector(".weather").style.display = "block";}
+        
+        var data = await response.json();
+        console.log(data);
+        
+        condition = data.current.condition.text;
+        document.querySelector(".city").innerHTML = data.location.name;
+        document.querySelector(".country").innerHTML = data.location.country;
+        document.querySelector(".temp").innerHTML = Math.round(data.current.temp_c)+'°C';
+        document.querySelector(".wind_speed").innerHTML = data.current.wind_kph+' Km/h';
+        document.querySelector(".humidity").innerHTML = data.current.humidity+' %';
+        document.querySelector(".condition").innerHTML = condition;
+        
+        console.log(condition);
+        if (condition == 'Clear') {
+            Weather_icon.src = "Images/night.png"
+            console.log(condition);
+        }
+        if (condition == 'Rain' || condition == 'Light rain') {
+            Weather_icon.src = "Images/rainy-day.png"
+            console.log(condition);
+        }
+        if (condition == 'Sunny') {
+            Weather_icon.src = "Images/sun.png"
+            console.log(condition);
+        }
+        if (condition == 'Partly cloudy' || condition == 'Cloudy') {
+            Weather_icon.src = "Images/Cloudy.png"
+            console.log(condition);
+        }
+        if (condition == 'Overcast') {
+            Weather_icon.src = "Images/Overcast.png"
+            console.log(condition);
+        }
+        
+        console.log(data.error)
+
+        
+    
+    
+    
+    
+    }
+
+    searched.addEventListener("click", ()=>{check_weather(searched_city.value);})
+    
+</script>
+</body>
+</html>
